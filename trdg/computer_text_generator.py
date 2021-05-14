@@ -3,32 +3,11 @@ import random as rnd
 from PIL import Image, ImageColor, ImageFont, ImageDraw, ImageFilter
 
 
-def generate(
-    text,
-    font,
-    text_color,
-    font_size,
-    orientation,
-    space_width,
-    character_spacing,
-    fit,
-    word_split,
-    stroke_width=0, 
-    stroke_fill="#282828",
-):
+def generate(text,font,text_color,font_size,orientation,space_width,
+             character_spacing,fit,word_split,stroke_width=0, stroke_fill="#282828",):
     if orientation == 0:
-        return _generate_horizontal_text(
-            text,
-            font,
-            text_color,
-            font_size,
-            space_width,
-            character_spacing,
-            fit,
-            word_split,
-            stroke_width,
-            stroke_fill,
-        )
+        return _generate_horizontal_text(text,font,text_color,font_size,space_width,character_spacing,
+                                         fit,word_split,stroke_width,stroke_fill,)
     elif orientation == 1:
         return _generate_vertical_text(
             text, font, text_color, font_size, space_width, character_spacing, fit,
@@ -40,8 +19,7 @@ def generate(
 
 def _generate_horizontal_text(
     text, font, text_color, font_size, space_width, character_spacing, fit, word_split, 
-    stroke_width=0, stroke_fill="#282828"
-):
+    stroke_width=0, stroke_fill="#282828"):
     image_font = ImageFont.truetype(font=font, size=font_size)
 
     space_width = int(image_font.getsize(" ")[0] * space_width)
