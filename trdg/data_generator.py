@@ -4,6 +4,8 @@ import cv2
 from PIL import Image, ImageFilter
 from numpy import asarray
 from trdg import computer_text_generator, background_generator, distorsion_generator
+import numpy as np
+
 
 try:
     from trdg import handwritten_text_generator
@@ -11,21 +13,44 @@ except ImportError as e:
     print("Missing modules for handwritten text generation.")
 
 
-def increase_brightness(img, value=None):
+def change_brightness(img, value=None):
     if value == None:
         value = rnd.randrange(30, 90, 5)
     img = asarray(img)
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
 
-    lim = 255 - value
-    v[v > lim] = 255
-    v[v <= lim] += value
-
+    # lim = 255 - value
+    # v[v > lim] = 255
+    # v[v <= lim] += value
+    v = cv2.add(v, value)
+    v[v > 255] = 255
+    v[v < 0] = 0
     final_hsv = cv2.merge((h, s, v))
     img = cv2.cvtColor(final_hsv, cv2.COLOR_HSV2BGR)
     img = Image.fromarray(img)
     return img
+
+
+def add_noise(image):
+    img = asarray(image)
+    row, col, ch = img.shape
+    s_vs_p = 0.4
+    amount = 0.01
+    out = np.copy(img)
+    # Salt mode
+    num_salt = np.ceil(amount * img.size * s_vs_p)
+    coords = [np.random.randint(0, i - 1, int(num_salt))
+              for i in img.shape]
+    out[tuple(coords)] = 1
+
+    # Pepper mode
+    num_pepper = np.ceil(amount * img.size * (1. - s_vs_p))
+    coords = [np.random.randint(0, i - 1, int(num_pepper))
+              for i in img.shape]
+    out[tuple(coords)] = 0
+    image = Image.fromarray(out)
+    return image
 
 
 class FakeTextDataGenerator(object):
@@ -143,13 +168,14 @@ class FakeTextDataGenerator(object):
             background_img = background_generator.quasicrystal(background_height, background_width)
         else:
             background_img = background_generator.image(background_height, background_width, image_dir)
-            background_img = increase_brightness(background_img)
+            background_img = change_brightness(background_img, value=rnd.randrange(0,30,5))
         background_mask = Image.new("RGB", (background_width, background_height), (0, 0, 0))
 
         #############################
         # Place text with alignment #
         #############################
-
+        resized_img = add_noise(resized_img)
+        resized_img = resized_img.filter(ImageFilter.BLUR)
         new_text_width, _ = resized_img.size
         issue_loc = [(325, 50), (310, 42), (320, 58), (311, 45)]
         if alignment == 0 or width == -1:
@@ -163,7 +189,7 @@ class FakeTextDataGenerator(object):
             init_img = Image.open(img_path)
             bg_width, bg_height = init_img.size
             background_img = background_generator.image(bg_height-10, bg_width-5, image_dir)
-            background_img = increase_brightness(background_img, value=rnd.randrange(10,30,5))
+            background_img = change_brightness(background_img, value=rnd.randrange(10,30,5))
             background_mask = Image.new("RGB", (bg_width, bg_height), (0, 0, 0))
             k = rnd.randint(0, 3)
             background_img.paste(resized_img,issue_loc[k],resized_img,)
@@ -183,18 +209,18 @@ class FakeTextDataGenerator(object):
         # Apply gaussian blur #
         #######################
 
-        gaussian_filter = ImageFilter.GaussianBlur(
-            radius=blur if not random_blur else rnd.randint(1, blur)
-        )
-        final_image = background_img.filter(gaussian_filter)
-        final_mask = background_mask.filter(gaussian_filter)
+        # gaussian_filter = ImageFilter.GaussianBlur(
+        #     radius=blur if not random_blur else rnd.randint(1, blur)
+        # )
+        # final_image = background_img.filter(gaussian_filter)
+        # final_mask = background_mask.filter(gaussian_filter)
         
         ############################################
         # Change image mode (RGB, grayscale, etc.) #
         ############################################
         
-        final_image = final_image.convert(image_mode)
-        final_mask = final_mask.convert(image_mode) 
+        final_image = background_img.convert(image_mode)
+        final_mask = background_mask.convert(image_mode)
 
         #####################################
         # Generate name for resulting image #

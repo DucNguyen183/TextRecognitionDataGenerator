@@ -2,20 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="68e18d25-1c3c-4867-b28e-3e9a0d897ea8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/trdg/computer_text_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/trdg/computer_text_generator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trdg/data_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/trdg/data_generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trdg/fonts/ar/Amiri-Regular.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trdg/fonts/ar/NotoSansArabic-Regular.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trdg/images/bricks.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trdg/images/city.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trdg/images/containers.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trdg/images/full_name.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trdg/images/water.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/trdg/images/cmt/address/address2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/trdg/images/cmt/address/address3.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/trdg/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/trdg/run.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trdg/texts/random_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trdg/texts/random_2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trdg/texts/random_3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trdg/texts/test.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +26,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/face-matching-service" />
+    <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/read_QRcode" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager">

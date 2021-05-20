@@ -37,9 +37,9 @@ def margins(margin):
     return [int(m) for m in margins]
 
 
-def init_args(type, field, row_count):
+def init_args(id_type, field, row_count):
     args_dict = {}
-    args_dict["output_dir"] = "out/{}/{}/".format(type, field)
+    args_dict["output_dir"] = "out/{}/{}/".format(id_type, field)
     args_dict["language"] = "en"
     args_dict["count"] = row_count
     args_dict["random_sequences"] = False
@@ -74,8 +74,8 @@ def init_args(type, field, row_count):
     args_dict["text_color"] = "#303030"
     args_dict["case"] = ''
     args_dict["image_dir"] = os.path.join(os.path.split(os.path.realpath(__file__))[0],
-                                          "images/{}/{}".format(type, field))
-    if type == 'cccd':
+                                          "images/{}/{}".format(id_type, field))
+    if id_type == 'cccd':
         if field == "name":
             args_dict["stroke_width"] = 1
             args_dict["format"] = 50
@@ -100,17 +100,17 @@ def init_args(type, field, row_count):
                 args_dict["alignment"] = 1
                 args_dict["width"] = 1470
                 args_dict["stroke_fill"] = "#0f0f0f"
-                args_dict["text_color"] = "#2e2f38"
+                args_dict["text_color"] = "#292c2b"
     else:
         args_dict["stroke_width"] = 0
         if field in ["address", "hometown"]:
             args_dict["name_format"] = 1
-        args_dict["format"] = 70
+        args_dict["format"] = 93
         args_dict["blur"] = 1
-        args_dict["random_blur"] = True
+        args_dict["random_blur"] = False
         args_dict["font"] = 'palatino-linotype.ttf'
-        args_dict["stroke_fill"] = "#425762"
-        args_dict["text_color"] = "#171f26"
+        args_dict["stroke_fill"] = "#000618"
+        args_dict["text_color"] = "#000618"
     return args_dict
 
 
@@ -157,16 +157,16 @@ def gen_text(args_dict, field, strings, fonts, index):
         pass
     p.terminate()
 
-    if args_dict["name_format"] == 2:
-        # Create file with filename-to-label connections
-        with open(
-                os.path.join(args_dict["output_dir"], "labels.txt"), "w", encoding="utf8"
-        ) as f:
-            for i in range(string_count):
-                file_name = str(i) + "." + args_dict["extension"]
-                if args_dict["space_width"] == 0:
-                    file_name = file_name.replace(" ", "")
-                f.write("{} {}\n".format(file_name, strings[i]))
+    # if args_dict["name_format"] == 2:
+    #     # Create file with filename-to-label connections
+    #     with open(
+    #             os.path.join(args_dict["output_dir"], "labels.txt"), "w", encoding="utf8"
+    #     ) as f:
+    #         for i in range(string_count):
+    #             file_name = str(i) + "." + args_dict["extension"]
+    #             if args_dict["space_width"] == 0:
+    #                 file_name = file_name.replace(" ", "")
+    #             f.write("{} {}\n".format(file_name, strings[i]))
 
 
 def read_data(file_path, field):
@@ -179,10 +179,13 @@ def remake_location(locations):
     location1 = []
     location2 = []
     counter = []
+    if not os.path.exists('label/'): os.makedirs('label/')
     for i, loc in enumerate(locations):
         temp_loc = loc.split(",")
         if len(loc) <= 25 or len(temp_loc) < 2:
             location1.append(loc)
+            with open('label/cmt09_address_annotation.txt', 'a') as f:
+                f.write("cmt09/address_{:05d}_0.jpg\t{}\n".format(i, loc))
         else:
             k = random.randint(1, len(temp_loc)-1)
             loc1 = ",".join(s for s in temp_loc[:k]).strip()
@@ -194,14 +197,17 @@ def remake_location(locations):
             location1.append(loc1)
             location2.append(loc2)
             counter.append(i)
+            with open('label/cmt09_address_annotation.txt', 'a') as f:
+                f.write("cmt09/address_{:05d}_0.jpg\t{}\n".format(i, loc1))
+                f.write("cmt09/address_{:05d}_1.jpg\t{}\n".format(i, loc2))
     return location1, location2, counter
 
 
-def run(type, text_data_path):
+def run(id_type, text_data_path):
     """
         Description: Main function
     """
-    if type == 'cccd':
+    if id_type == 'cccd':
         list_field = ["name", "id_number", "dob", "address", "hometown", "issue_date"]
     else:
         list_field = ['address']
@@ -210,7 +216,7 @@ def run(type, text_data_path):
             print("Generate images for field: {}...".format(field))
             info = read_data(text_data_path, field)
             # Argument init
-            args_dict = init_args(type, field, len(info))
+            args_dict = init_args(id_type, field, len(info))
 
             # Create the directory if it does not exist.
             try:
@@ -292,13 +298,13 @@ def run(type, text_data_path):
                 # strings = [s.replace("", " ")[:-1] for s in strings]
                 gen_text(args_dict, field, strings, fonts, range(0, len(strings)))
             else:
-                if type == 'cmt':
+                if id_type == 'cmt':
                     list_fonts = ['palatino-linotype.ttf', 'Trixi Pro Regular.ttf']
                     fonts = [os.path.join(args_dict["font_dir"], cmt_font) for cmt_font in list_fonts]
                 args_dict["name_format"] = 1
-                gen_text(args_dict, field, strings, fonts, range(0, len(strings)))
+                gen_text(args_dict, field, strings, fonts, range(0, 5))
                 args_dict["name_format"] = 2
-                gen_text(args_dict, field, string1, fonts, counter)
+                gen_text(args_dict, field, string1, fonts, range(0,5))
             # if args_dict["name_format"] == 3:
             #     # Create file with filename-to-label connections
             #     with open(
@@ -314,4 +320,4 @@ def run(type, text_data_path):
 
 
 if __name__ == "__main__":
-    run('cmt', '/home/duc/project/TextRecognitionDataGenerator/trdg/texts/cccd_labels.csv')
+    run('cmt', 'texts/cccd_labels.csv')
