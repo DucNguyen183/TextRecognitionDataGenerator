@@ -175,12 +175,12 @@ def read_data(file_path, field):
     return info
 
 
-def remake_location(locations):
+def remake_location(locations, num):
     location1 = []
     location2 = []
     counter = []
     if not os.path.exists('label/'): os.makedirs('label/')
-    for i, loc in enumerate(locations):
+    for i, loc in enumerate(locations[:num]):
         temp_loc = loc.split(",")
         if len(loc) <= 25 or len(temp_loc) < 2:
             location1.append(loc)
@@ -274,7 +274,7 @@ def run(id_type, text_data_path):
             elif field == 'issue_date':
                 strings = format_date(info)
             else:
-                strings, string1, counter = remake_location(info)
+                strings, string1, counter = remake_location(info, 5000)
             if args_dict["language"] == "ar":
                 from arabic_reshaper import ArabicReshaper
 
@@ -302,9 +302,9 @@ def run(id_type, text_data_path):
                     list_fonts = ['palatino-linotype.ttf', 'Trixi Pro Regular.ttf']
                     fonts = [os.path.join(args_dict["font_dir"], cmt_font) for cmt_font in list_fonts]
                 args_dict["name_format"] = 1
-                gen_text(args_dict, field, strings, fonts, range(0, 5))
+                gen_text(args_dict, field, strings, fonts, range(0, len(strings)))
                 args_dict["name_format"] = 2
-                gen_text(args_dict, field, string1, fonts, range(0,5))
+                gen_text(args_dict, field, string1, fonts, counter)
             # if args_dict["name_format"] == 3:
             #     # Create file with filename-to-label connections
             #     with open(
